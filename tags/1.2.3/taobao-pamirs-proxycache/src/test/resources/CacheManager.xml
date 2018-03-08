@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans default-autowire="byName">           
+	
+ 	<bean id="tairManager" class="com.taobao.tair.impl.DefaultTairManager"
+		init-method="init">
+		<property name="configServerList">
+			<list>
+				<value>tair2.config-vip.taobao.net:5198</value>
+				<value>tair2.config-vip.taobao.net:5198</value>
+			</list>
+		</property>
+		<property name="groupName">
+			<value>group_1</value>
+		</property>
+	</bean>
+ 
+ 	<bean id="applicationContextUtil" class="com.taobao.pamirs.cache.ApplicationContextUtil"/> 
+
+ 	<bean id="testBean" class="com.taobao.pamirs.cachemanager.test.TestBeanImpl"/> 
+    <bean id="testBean2" class="com.taobao.pamirs.cachemanager.test.TestBeanImpl"/> 		
+ 	<bean id="testBean3" class="com.taobao.pamirs.cachemanager.test.TestBeanImpl"/> 
+ 	
+ 	<bean id="cacheManager" class="com.taobao.pamirs.cache.manager.CacheManager" depends-on="tairManager,applicationContextUtil"> 
+ 	 
+ 	    <!-- 缓存定义默认值 add by yuanhong -->
+ 	    <!-- 暂时支持有默认值的属性有：returnType、storeType、expireTimes、loadDataMethodName、isInitialData、cleanTime、groupName-->	
+ 	    <property name="defaultCacheConfig">
+ 	         <value>
+           	       returnType=serializable,
+           	       storeType=map,
+           	       storeTairRegion=HJ_PROD,
+           	       storeTairNameSpace=136,
+           	       expireTimes=60000,
+           	       cleanTime=0,10,20,30,40,50 * * * * ? *,
+           	       groupName=基础数据           	       
+ 	         </value>
+ 	    </property>
+
+ 		<!-- 缓存定义 -->
+ 		<property name="cacheConfig">
+			<list>
+            	<value>beanName=testBean,
+            	       methodName=getService,
+            	       parameterTypes={long},
+            	       cacheName=serviceCache
+            	 </value>
+            </list>
+        </property>
+        
+        <property name="cacheCleanConfig">
+			<list>
+            	<value>beanName=order,
+            		   methodName=notify,
+            		   parameterTypes={String,Object},
+            		   cacheCleanCodes=testBean#getService#{long,Object}
+            	</value>
+            </list>
+        </property>
+
+        <!-- 初始化装载标志位 -->
+ 		<property name="cacheInitFlag">
+ 			<value>true</value>
+ 		</property>
+        <!-- 是否使用 缓存读功能 标志位 -->
+ 		<property name="cacheUseFlag">
+ 			<value>true</value>
+ 		</property>
+ 		 		
+ 	</bean> 
+
+ 	<bean id="cacheManagerHandle" class="com.taobao.pamirs.cache.aop.handle.CacheManagerHandle">
+ 		<property name="cacheManager" ref="cacheManager"></property>       
+ 	</bean>  	
+
+ 	
+ </beans>
+ 

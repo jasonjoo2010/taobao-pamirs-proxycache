@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="GBK"?>
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%p [%t] %c{1}.%M(%L) | %m%n" />
+		</layout>
+	</appender>
+
+<!-- 	<appender name="threadcache" class="org.apache.log4j.DailyRollingFileAppender"> -->
+<!-- 		<param name="file" value="threadcache.log" /> -->
+<!-- 		<param name="append" value="false" /> -->
+<!-- 		<param name="encoding" value="GBK" /> -->
+<!-- 		<layout class="org.apache.log4j.PatternLayout"> -->
+<!-- 			<param name="ConversionPattern" value="%d [%X{requestURIWithQueryString}] %-5p %c{2} - %m%n" /> -->
+<!-- 		</layout> -->
+<!-- 	</appender> -->
+
+<!-- 	<logger name="com.taobao.pamirs.cache.store.threadcache" additivity="false"> -->
+<!-- 		<level value="warn" /> -->
+<!-- 		<appender-ref ref="threadcache" /> -->
+<!-- 	</logger> -->
+
+	<root>
+		<level value="DEBUG" />
+		<appender-ref ref="CONSOLE" />
+	</root>
+</log4j:configuration>

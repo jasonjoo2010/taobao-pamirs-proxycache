@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="GBK"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans default-autowire="byName">
+	<bean id="notifyManagerBean" class="com.taobao.hsf.notify.client.NotifyManagerBean"
+		init-method="init">
+		<property name="groupId" value="${rating.engine.notify.groupId}" />
+		<property name="name" value="notifyManager" />
+		<property name="description" value="notifyManager" />
+	</bean>
+	<bean id="notifyBillingRateResultPackage"
+		class="com.taobao.upp.rating.center.notify.NotifyBillingRateResultPackage">
+		<property name="topic">
+			<value>${rating.engine.notify.topic}</value>
+		</property>
+		<property name="messageType">
+			<value>${rating.engine.notify.messageType}</value>
+		</property>
+	</bean>
+	
+	
+</beans>

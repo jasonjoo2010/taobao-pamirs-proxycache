@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans default-autowire="byName">           
+	
+ <!-- meta会话工厂配置 -->
+<bean id="metaClientConfig" class="com.taobao.metamorphosis.client.MetaClientConfig" />
+
+<!-- 点对点
+<bean id="sessionFactory" class="com.taobao.metamorphosis.client.MetaMessageSessionFactory">
+    <constructor-arg>
+        <ref bean="metaClientConfig"/>
+    </constructor-arg>
+</bean> 
+ -->
+
+<!-- 如果是广播接收方式  !--> 
+<bean id="sessionFactory" class="com.taobao.metamorphosis.client.extension.MetaBroadcastMessageSessionFactory">
+    <constructor-arg>
+        <ref bean="metaClientConfig"/>
+    </constructor-arg>
+</bean>
+
+
+<!-- meta消息生产者 -->
+<bean id="producer" factory-bean="sessionFactory" factory-method="createProducer" />
+<!-- 假设在这个bean中使用消息生产者producer -->
+<bean id="useProducer" class="com.taobao.mq.sample.test.UseProducer" init-method="init" > 
+
+    <property name ="producer"> 
+        <ref bean="producer"/>
+    </property> 
+
+</bean> 
+
+
+<!-- meta消息消费者配置 -->
+<bean id="consumerConfig" class="com.taobao.metamorphosis.client.consumer.ConsumerConfig" >
+    <!-- 接收消息的group,根据自己应用修改,千万别拷我这个group的值(meta-example-group) -->
+    <property name="group">
+        <value>meta-example-group</value>
+    </property>
+    <!-- 其他更多的参数配置,如果有特殊需要的联系伯岩或无花 -->
+</bean> 
+
+
+
+
+<!-- meta消息消费者
+<bean id="consumer" factory-bean="sessionFactory" factory-method="createConsumer">
+    <constructor-arg>
+        <ref bean="consumerConfig"/>
+    </constructor-arg>
+</bean> 
+ -->
+
+<!-- 如果是广播方式--> 
+<bean id="consumer" factory-bean="sessionFactory" factory-method="createBroadcastConsumer">
+<constructor-arg>
+<ref bean="consumerConfig"/>
+</constructor-arg>
+</bean>
+
+
+<!-- 假设在这个bean中使用消息消费者consumer -->
+<bean id="consumerExp" class="com.taobao.mq.sample.test.ConsumerExp" init-method="init" >
+    <!-- 给每个topic的消息指定处理器,当然也可以不用这种配置的方式,可以直接写在初始化init方法里 -->
+    <property name ="listenerMap"> 
+        <map>
+            <entry key ="topic1" value-ref="topic1MessageListener" /> 
+            <entry key ="topic2" value-ref="topic2MessageListener" /> 
+       </map>
+    </property> 
+
+    <property name ="consumer"> 
+        <ref bean="consumer"/>
+    </property>
+</bean> 
+
+
+<bean id="topic1MessageListener" class="com.taobao.mq.sample.test.Topic1MessageListener" />
+<bean id="topic2MessageListener" class="com.taobao.mq.sample.test.Topic1MessageListener" />
+
+ 	
+ </beans>
+ 

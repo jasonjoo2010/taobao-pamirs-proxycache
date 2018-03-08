@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="GBK"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans default-autowire="byName">
+	<bean id="applicationContextUtil" class="com.taobao.pamirs.cache.ApplicationContextUtil"/> 
+	<bean id="uppCacheManager" class="com.taobao.pamirs.cache.manager.CacheManager" depends-on="tairManager,applicationContextUtil"> 
+ 		<property name="defaultCacheConfig">
+             <value>
+                     storeTairRegion=${model.store.tair.region},
+                     storeTairNameSpace=318,
+                     cleanTime=0,10,20,30,40,50 * * * * ? *
+             </value>
+        </property>
+ 		<property name="cacheConfig">
+			<list>
+            	<value>beanName=productReadService,
+            	       methodName=getProductDTOById,
+            	       parameterTypes={Long},
+            	       returnType=serializable,
+            	       cacheName=productReadService.getProductDTOById,
+            	       storeType=tair,
+            	       expireTimes=6000000,         	       
+            	       groupName=配置数据
+            	 </value> 
+            	<value>beanName=productReadService,
+            	       methodName=getProdId,
+            	       parameterTypes={String},
+            	       returnType=serializable,
+            	       cacheName=productReadService.getProdId,
+            	       storeType=tair,
+            	       expireTimes=6000000,         	       
+            	       groupName=配置数据
+            	 </value> 
+            	<value>beanName=activityInventoryReadService,
+            	       methodName=getActivityInventoryByActIdAndObj,
+            	       parameterTypes={String},
+            	       returnType=serializable,
+            	       cacheName=activityInventoryReadService.getActivityInventoryByActIdAndObj,
+            	       storeType=tair,
+            	       expireTimes=0,
+            	       groupName=库存数据
+            	 </value>
+            	<value>beanName=activityInventoryReadService,
+            	       methodName=getInventoryByObj,
+            	       parameterTypes={String},
+            	       returnType=serializable,
+            	       cacheName=activityInventoryReadService.getInventoryByObj,
+            	       storeType=tair,
+            	       expireTimes=0,
+            	       groupName=库存数据
+            	 </value>
+				 <value>beanName=activityInventoryReadService,
+            	       methodName=getPeriodicActInvtByActIdAndObj,
+            	       parameterTypes={String},
+            	       returnType=serializable,
+            	       cacheName=activityInventoryReadService.getPeriodicActInvtByActIdAndObj,
+            	       storeType=tair,
+            	       expireTimes=0,         	       
+            	       groupName=库存数据
+            	 </value> 
+            	 	<value>beanName=moduleInstanceReadService,
+            	       methodName=getModuleInstanceByUserIdAndId,
+            	       parameterTypes={String},
+            	       returnType=serializable,
+            	       cacheName=moduleInstanceReadService.getModuleInstanceByUserIdAndId,
+            	       storeType=tair,
+            	       expireTimes=6000000,         	       
+            	       groupName=配置数据
+            	 </value> 
+            	 <value>beanName=moduleInstanceReadService,
+            	       methodName=getModuleInstancesByUserIdAndMasterIdAndTypeStr,
+            	       parameterTypes={String},
+            	       returnType=serializable,
+            	       cacheName=moduleInstanceReadService.getModuleInstancesByUserIdAndMasterIdAndTypeStr,
+            	       storeType=tair,
+            	       expireTimes=6000000,         	       
+            	       groupName=配置数据
+            	 </value> 
+            </list>
+        </property>
+        <property name="cacheCleanConfig">
+			<list>
+            	<value>beanName=productReadService,
+            		   methodName=cleanCacheById,
+            		   parameterTypes={Long},
+            		   cacheCleanCodes=productReadService#getProductDTOById#{Long}
+            	</value>
+            	<value>beanName=productReadService,
+            		   methodName=cleanCacheByCode,
+            		   parameterTypes={String},
+            		   cacheCleanCodes=productReadService#getProdId#{String}
+            	</value>
+            	
+            	<value>beanName=activityInventoryReadService,
+            		   methodName=cleanCacheByActIdObjIdAndObjTypeKey,
+            		   parameterTypes={String},
+            		   cacheCleanCodes=activityInventoryReadService#getActivityInventoryByActIdAndObj#{String};activityInventoryReadService#getPeriodicActInvtByActIdAndObj#{String}
+            	</value>
+				<value>beanName=activityInventoryReadService,
+            		   methodName=cleanCacheByObjIdAndObjTypeKey,
+            		   parameterTypes={String},
+            		   cacheCleanCodes=activityInventoryReadService#getInventoryByObj#{String}
+            	</value>
+            	 <value>
+            	 	   beanName=moduleInstanceReadService,
+            	       methodName=cleanCacheById,
+            	       parameterTypes={String},
+            	       cacheCleanCodes=moduleInstanceReadService#getModuleInstanceByUserIdAndId#{String}
+            	 </value> 
+            	 <value>
+            	  	   beanName=moduleInstanceReadService,
+            	       methodName=cleanCacheByUserIdAndMasterIdAndTypeStr,
+            	       parameterTypes={String},
+            	       cacheCleanCodes=moduleInstanceReadService#getModuleInstancesByUserIdAndMasterIdAndTypeStr#{String}
+            	 </value> 
+            </list>
+        </property>
+ 		<property name="cacheInitFlag">
+ 			<value>true</value>
+ 		</property>
+ 		<property name="cacheUseFlag">
+ 			<value>true</value>
+ 		</property> 		
+ 	</bean> 
+ 	<bean id="cacheManagerHandle" class="com.taobao.pamirs.cache.aop.handle.CacheManagerHandle">
+ 		<property name="cacheManager" ref="uppCacheManager"></property>       
+ 	</bean>
+	
+	
+</beans>
